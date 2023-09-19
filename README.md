@@ -1,3 +1,314 @@
+# TUGAS 3 PBP
+<hr>
+
+## A. Perbedaan form `POST` dan form `GET` dalam Django
+
+Perbedaan utama antara form POST dan form GET dalam Django adalah cara data dikirimkan dari halaman web ke server:
+
+1. Form `POST` (HTTP method: POST):
+   - Data dikirimkan secara tersembunyi dalam body permintaan HTTP.
+   - Cocok digunakan untuk mengirim data sensitif seperti kata sandi.
+   - Tidak terbatas pada panjang data yang dapat dikirimkan.
+   - Tidak tampil di URL, sehingga lebih aman dari sisi privasi.
+
+Contoh penggunaan umum form POST dalam Django adalah ketika mengirimkan formulir pendaftaran pengguna atau mengirimkan data ke server untuk memproses.
+
+```html
+<form method="post" action="/submit/">
+    <!-- Isi formulir -->
+    <input type="submit" value="Submit">
+</form>
+```
+
+2. Form `GET` (HTTP method: GET):
+   - Data dikirimkan melalui URL dalam bentuk query string.
+   - Tidak cocok untuk data sensitif karena terlihat dalam URL.
+   - Terbatas pada panjang URL yang dapat digunakan (tergantung pada browser dan server).
+   - Berguna untuk pencarian atau filter data karena parameter dapat dilihat dan dibagikan melalui URL.
+
+Contoh penggunaan umum form GET dalam Django adalah ketika membuat tautan untuk menyaring atau mencari data:
+
+```html
+<form method="get" action="/search/">
+    <!-- Isi formulir pencarian -->
+    <input type="text" name="query">
+    <input type="submit" value="Search">
+</form>
+```
+
+Pilihan antara POST dan GET harus dipilih sesuai dengan kebutuhan aplikasi, dengan mempertimbangkan keamanan, privasi, dan fungsi yang diinginkan.
+
+## B. Perbedaan XML, JSON, dan HTML dalam konteks pengiriman data
+Perbedaan utama antara XML, JSON, dan HTML dalam konteks pengiriman data adalah sebagai berikut:
+
+1. **XML (eXtensible Markup Language)**:
+   - **Tujuan Utama**: XML dirancang untuk merepresentasikan dan mengirimkan data dalam bentuk struktur terstruktur yang dapat disesuaikan.
+   - **Struktur**: XML menggunakan tag kustom untuk mendefinisikan struktur data. Ini memungkinkan pemodelan data yang kuat dan kompleks.
+   - **Keuntungan**: Cocok untuk pertukaran data yang rumit antara sistem yang berbeda dan memiliki dukungan kuat untuk validasi data.
+   - **Kekurangan**: Lebih berat dan kompleks dibandingkan dengan JSON dan HTML. Dibutuhkan lebih banyak overhead.
+
+2. **JSON (JavaScript Object Notation)**:
+   - **Tujuan Utama**: JSON digunakan untuk merepresentasikan data dalam format yang mudah dibaca dan dipahami oleh manusia dan mudah diproses oleh mesin.
+   - **Struktur**: JSON menggunakan sintaksis objek dan larik untuk merepresentasikan data, menjadikannya lebih ringkas dan mudah digunakan.
+   - **Keuntungan**: Ringan, mudah diproses oleh berbagai bahasa pemrograman, dan sering digunakan dalam API web.
+   - **Kekurangan**: Tidak memiliki dukungan untuk metadata dan validasi data sekuat XML.
+
+3. **HTML (HyperText Markup Language)**:
+   - **Tujuan Utama**: HTML digunakan untuk mendefinisikan struktur dan tampilan konten web, bukan untuk pengiriman data mentah.
+   - **Struktur**: HTML adalah bahasa markup yang digunakan untuk membuat halaman web yang dapat di-render oleh browser.
+   - **Keuntungan**: Memungkinkan pembuatan tampilan web yang interaktif dan responsif, namun tidak efisien untuk pertukaran data mentah.
+   - **Kekurangan**: Tidak dirancang untuk pengiriman data mentah, dan tidak sesuai untuk pertukaran data antara aplikasi.
+
+Jadi, pilihan antara XML, JSON, atau HTML dalam pengiriman data akan sangat tergantung pada kebutuhan aplikasi. JSON umumnya digunakan untuk pertukaran data antara aplikasi dan dalam API web karena kejelasan dan keringkasan sintaksisnya. XML lebih sesuai jika kita memerlukan struktur data yang kompleks dan validasi yang ketat. HTML, di sisi lain, digunakan untuk membangun tampilan web.
+
+## C. Alasan JSON sering digunakan dalam pertukaran data antara aplikasi web modern.
+JSON sering digunakan dalam pertukaran data antara aplikasi web modern karena memiliki sejumlah keunggulan yang sangat relevan dengan kebutuhan pengembangan aplikasi web saat ini:
+
+1. **Keringkasan Sintaksis**: JSON menggunakan format yang ringkas dan mudah dipahami oleh manusia, sehingga memudahkan pembacaan dan debugging.
+
+2. **Kemudahan Pengolahan**: JSON dapat dengan mudah diproses oleh berbagai bahasa pemrograman, termasuk JavaScript (yang umum digunakan di sisi klien), Python, Ruby, dan banyak lagi, berkat struktur data sederhana dalam bentuk objek dan larik.
+
+3. **Efisien untuk Pengiriman**: JSON adalah format data ringan, sehingga mengurangi overhead saat mengirim data melalui jaringan. Hal ini membuatnya cocok untuk aplikasi web yang menekankan efisiensi dan kinerja.
+
+4. **Dukungan untuk API REST**: Banyak aplikasi web modern berkomunikasi melalui API REST (Representational State Transfer), dan JSON menjadi format yang sangat umum digunakan dalam API REST. Ini memungkinkan aplikasi berbicara satu sama lain dengan cara yang konsisten dan mudah dimengerti.
+
+5. **Kemampuan Serbaguna**: JSON mendukung struktur data yang serbaguna, termasuk objek bersarang dan larik, sehingga dapat digunakan untuk merepresentasikan berbagai jenis data, dari sederhana hingga kompleks.
+
+6. **Integrasi dengan JavaScript**: JSON secara alami cocok dengan JavaScript, yang memungkinkan data JSON dapat diuraikan dengan mudah dan digunakan dalam kode JavaScript di sisi klien.
+
+7. **Dukungan dalam Database**: Banyak database modern memiliki dukungan bawaan untuk penyimpanan dan pengambilan data dalam format JSON, yang mempermudah integrasi dengan aplikasi web.
+
+8. **Dukungan Format Penuh**: JSON memiliki dukungan yang baik di berbagai alat, framework, dan pustaka yang digunakan dalam pengembangan aplikasi web modern.
+
+Kesimpulannya, JSON adalah format data yang sangat fleksibel, mudah digunakan, dan efisien dalam pertukaran data antara aplikasi web modern. Karena kemudahan penggunaannya dan dukungannya yang luas, JSON telah menjadi standar de facto dalam komunikasi data di dunia web saat ini.
+
+## D. Tata Cara Implementasi Checklist
+Sebelum membuat form pastikan kita sudah punya base.html di template projek.
+### 1. Membuat input form untuk menambahkan objek model pada app sebelumnya.
+
+#### a) Membuat file baru pada folder `main` dengan nama `forms.py` dengan isi kode seperti berikut:
+```python
+from django.forms import ModelForm
+from main.models import Product
+
+class ItemForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ["name", "amount", "description"]
+```
+
+#### b) Menambahkan beberapa import di `views.py` yang ada di `main`.
+
+```python
+from django.http import HttpResponseRedirect
+from main.forms import ProductForm
+from django.urls import reverse
+```
+
+#### c) Membuat fungsi baru di `views.py` di folder `main` dengan kode berikut:
+```python
+def add_item(request):
+    form = ItemForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "add_item", context)
+```
+Dengan kode diatas kita mengirim data yang sudah dalam objek `form Item`, jika form nya baru dibuat maka kita akan ke tampilan `homepage` awal dengan data form baru.
+
+Jika belum ada form data maka kita akan membuat tampilan untuk mengadd Item baru.
+
+#### d) Menambahkan fungsi `show_main` pada `views.py` di folder `main`.
+
+```py
+def show_main (request):
+    items = Item.objects.all()
+    jumlah_barang = Item.objects.aggregate(total = Sum("amount"))['total']
+    jumlah_item = Item.objects.count()
+
+    if jumlah_barang == None:
+        jumlah_barang = 0
+
+    context = {
+        "Nama_Aplikasi" : "main",
+        "Nama" : "Muh. Kemal Lathif Galih Putra",
+        "Kelas" : "PBP - D",
+        "items"  : items,
+        "jumlah_jenis" : jumlah_item,
+        "jumlah_barang" : jumlah_barang
+    }
+    return render(request,"homepage.html",context)
+```
+
+Dari kode diatas kita mengambil semua objek dalam `model Item` yang telah kita buat dalam bentuk `form`. Objek ini akan dipassing ke `show_main`.
+
+Lalu juga ada kode untuk membuat Bonus poin (Berapa item dan Berapa jumlah).
+
+#### d) Menambahkan import fungsi baru dari `views.py` ke `urls.py` di `main` dan membuat `path route` baru untuk tampilan `add Item` dengan kode berikut:
+```py
+from main.views import show_main, create_product
+```
+```py
+path('add-item', add_item, name='add_item')
+```
+#### e) Membuat file `add_item.html` baru dalam `template` di `main` dengan kode seperti berikut:
+```html
+{% extends 'base.html' %} 
+
+{% block content %}
+<h1>Add New Product</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Add Product"/>
+            </td>
+        </tr>
+    </table>
+</form>
+
+{% endblock %}
+```
+Dengan kode diatas kita membuat tampilan untuk menambahkan Item dalam form yang sudah di generate oleh Django.
+
+#### f) Mengedit file `homepage.html` seperti berikut:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>WELCOME TO QEMUL OLSHOP!!!</h1>
+
+<h3>Nama Aplikasi: </h3>
+<p>{{Nama_Aplikasi}}</p>
+
+<h3>Nama: </h3>
+<p>{{Nama}}<p>
+
+<h3>Kelas: </h3>
+<p>{{Kelas}}<p>
+
+<h3>Kamu memiliki {{jumlah_jenis}} item dengan total {{jumlah_barang}} buah</h3>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Description</th>
+    </tr>
+
+    {% comment %} Berikut cara memperlihatkan data produk di bawah baris ini {% endcomment %}
+
+    {% for item in items %}
+        <tr>
+            <td>{{item.name}}</td>
+            <td>{{item.amount}}</td>
+            <td>{{item.description}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<br />
+
+<a href="{% url 'main:add_item' %}">
+    <button>
+        Add New Product
+    </button>
+</a>
+
+{% endblock content %}
+```
+Dengan kode diatas kita bisa memvisualkan data kita dengan tampilan tabel dan ada tombol yang bisa mengantarkan kita untuk menambahkan data kita.
+
+### 2. Menambahkan 5 fungsi views untuk melihat objek yang sudah ditambahkan dalam format HTML, XML, JSON, XML by ID, dan JSON by ID.
+Membuat fungsi `show_xml, show_json, show_xml_by_id, show_json_by_id` ditambah dengan mengedit `show_main` yang telah dilakukan dipembuatan forms diatas pada `views.py` di `main`
+```py
+def show_xml(request):
+    data = Item.objects.all()
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json(request):
+    data = Item.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_xml_by_id(request, id):
+    data = Item.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json_by_id(request, id):
+    data = Item.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_main (request):
+    items = Item.objects.all()
+    jumlah_barang = Item.objects.aggregate(total = Sum("amount"))['total']
+    jumlah_item = Item.objects.count()
+
+    if jumlah_barang == None:
+        jumlah_barang = 0
+
+    context = {
+        "Nama_Aplikasi" : "main",
+        "Nama" : "Muh. Kemal Lathif Galih Putra",
+        "Kelas" : "PBP - D",
+        "items"  : items,
+        "jumlah_jenis" : jumlah_item,
+        "jumlah_barang" : jumlah_barang
+    }
+    return render(request,"homepage.html",context)
+```
+Dari masing fungsi-fungsi diatas kita membuat export data base yang kita punya sesuai format yang diinginkan bisa XML, JSON, atau dalam bentukan website HTML.
+
+### 3. Membuat routing URL untuk masing-masing views yang telah ditambahkan pada poin 2.
+Mengimport fungsi di `views.py` pada `main` dan membuat route path di `urls.py` di `main`.
+
+```py
+from django.urls import path
+from main.views import show_main,add_item,show_xml,show_xml_by_id,show_json,show_json_by_id
+
+app_name = "main"
+
+urlpatterns = [
+    path("", show_main, name = "show_main"),
+    path("add-item",add_item, name="add_item"),
+    path("xml",show_xml, name="show_xml"),
+    path("xml/<int:id>/",show_xml_by_id, name="show_xml_by_id"),
+    path("json",show_json, name="show_json"),
+    path("json/<int:id>/",show_json_by_id, name="show_json_by_id")
+]
+```
+Dari kode diatas jadinya jika ada path dari website utama akan ke arah fungsi untuk menampikan database sesuai format yang diinginkan.
+
+## E. Screenshot Postman HTML, JSON, XML, JSON by ID, XML by ID
+#### 1. SS Postman HTML
+<img src = dokumen_tambahan\show_html.jpg>
+
+#### 2. SS Postman JSON
+<img src = dokumen_tambahan\show_json.jpg>
+
+#### 3. SS Postman JSON by ID
+<img src = dokumen_tambahan\show_json_id.jpg>
+
+#### 4. SS Postman XML
+<img src = dokumen_tambahan\show_xml.jpg>
+
+#### 5. SS Postman XML by ID
+<img src = dokumen_tambahan\show_xml_id.jpg>
+
+<br>
+
+# TUGAS 2 PBP
+
+
+<hr>
+
 ## A. Aplikasi Online Shopping 
 [QEMUL OLSHOP](https://qemulolshop.adaptable.app/main/)
 

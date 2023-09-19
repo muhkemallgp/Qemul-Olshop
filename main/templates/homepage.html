@@ -1,14 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QEMUL OLSHOPt</title>
-</head>
-<body>
-    <h1>Welcome to Qemul Olshop</h1>
-    <h4>Nama Aplikasi: {{Nama_Aplikasi}}</h4>
-    <h4>Nama: {{Nama}}</h4>
-    <h4>Kelas: {{Kelas}}</h4>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>WELCOME TO QEMUL OLSHOP!!!</h1>
+
+<h3>Nama Aplikasi: </h3>
+<p>{{Nama_Aplikasi}}</p>
+
+<h3>Nama: </h3>
+<p>{{Nama}}<p>
+
+<h3>Kelas: </h3>
+<p>{{Kelas}}<p>
+
+<h3>Kamu memiliki {{jumlah_jenis}} item dengan total {{jumlah_barang}} buah</h3>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Description</th>
+    </tr>
+
+    {% comment %} Berikut cara memperlihatkan data produk di bawah baris ini {% endcomment %}
+
+    {% for item in items %}
+        <tr>
+            <td>{{item.name}}</td>
+            <td>{{item.amount}}</td>
+            <td>{{item.description}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<br />
+
+<a href="{% url 'main:add_item' %}">
+    <button>
+        Add New Product
+    </button>
+</a>
+
+{% endblock content %}
