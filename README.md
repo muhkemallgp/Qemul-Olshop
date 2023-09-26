@@ -1,8 +1,293 @@
+# TUGAS 4 PBP
+<hr>
+
+## A. Django `UserCreationForm`
+Django `UserCreationForm` adalah sebuah bentuk (form) bawaan dalam kerangka kerja Django yang digunakan untuk membuat formulir pendaftaran pengguna (user registration form). Form ini dirancang khusus untuk membuat pengguna baru dengan informasi seperti username, password, dan konfirmasi password. 
+
+`UserCreationForm` telah terintegrasi dengan sistem otentikasi Django, sehingga memudahkan pengembang untuk mengimplementasikan fitur pendaftaran pengguna dalam aplikasi web Django mereka. 
+
+Kelebihan dari `UserCreationForm` meliputi:
+
+#### 1) Kemudahan Penggunaan: Form ini sudah terintegrasi dengan Django, sehingga mudah digunakan tanpa perlu menulis kode form dari awal.
+#### 2) Validasi Bawaan: Form ini melakukan validasi otomatis terhadap data yang dimasukkan oleh pengguna, seperti memastikan bahwa password yang dimasukkan cocok.
+
+Beberapa kekurangan `UserCreationForm` meliputi:
+
+#### Tampilan Default: Form ini memiliki tampilan default yang sederhana, jadi jika Anda ingin menyesuaikan tampilan sesuai dengan kebutuhan aplikasi Anda, Anda perlu menambahkan kode tambahan.
+
+## B. Autentikasi dan Otorisasi
+__Autentikasi__ dan __otorisasi__ adalah dua konsep penting dalam pengembangan web, termasuk dalam konteks Django:
+
+- __Autentikasi__ adalah proses verifikasi identitas pengguna. Dalam Django, ini berarti memeriksa apakah pengguna memiliki kredensial yang valid (biasanya username dan password) untuk mengakses sistem.
+
+- __Otorisasi__ adalah proses pengendalian akses terhadap sumber daya atau tindakan tertentu dalam sistem. Setelah pengguna terautentikasi, otorisasi menentukan apakah pengguna tersebut memiliki izin untuk melakukan tindakan atau mengakses sumber daya tertentu.
+
+Keduanya penting karena autentikasi menjaga keamanan sistem dengan memastikan bahwa hanya pengguna yang sah yang dapat mengaksesnya, sementara otorisasi memastikan bahwa pengguna hanya memiliki akses ke bagian sistem yang sesuai dengan izin mereka.
+
+## C. _Cookies_ dalam aplikasi website
+_Cookies_ dalam konteks aplikasi web adalah sepotong data yang disimpan di sisi klien (biasanya dalam browser pengguna) dan digunakan untuk menyimpan informasi sesi atau preferensi pengguna. Django menggunakan _cookies_ untuk mengelola data sesi pengguna dengan cara yang aman. Ini membantu mengidentifikasi pengguna dan menyimpan informasi seperti ID sesi, preferensi, atau status login.
+
+## D. Resiko penggunaan _Cookies_
+Penggunaan cookies secara default dalam pengembangan web bisa dibilang relatif aman, terutama jika digunakan dengan benar. 
+
+Namun, ada beberapa risiko potensial yang harus diwaspadai:
+
+#### 1) Pelacakan
+Cookies dapat digunakan untuk melacak aktivitas pengguna secara online, yang bisa menganggu privasi pengguna. Beberapa perusahaan atau entitas dapat menggunakan cookies untuk mengumpulkan data pengguna tanpa izin mereka.
+
+#### 2) Kekuatan Kata Sandi
+Jika cookies digunakan untuk menyimpan token otentikasi atau informasi sensitif lainnya, peretas yang berhasil mencurinya dapat memanfaatkannya untuk mengakses akun pengguna. Oleh karena itu, penting untuk melindungi cookies dengan enkripsi dan mekanisme keamanan yang kuat.
+
+#### 3) Cookie Theft (Pencurian Cookie)
+Peretas dapat mencuri cookies dari perangkat pengguna melalui serangan seperti cross-site scripting (XSS) atau man-in-the-middle (MITM) attack.
+
+Penting untuk mengimplementasikan cookies dengan bijak dan mempertimbangkan keamanan serta privasi pengguna dalam pengembangan aplikasi web Anda. Selain itu, Anda dapat menggunakan teknik seperti enkripsi dan HTTPS untuk meningkatkan keamanan cookies dan data yang disimpan di dalamnya.
+
+## E. Tatacara Implementasi
+### 1. Mengimplementasikan fungsi registrasi, login, dan logout ditambah dengan menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last login pada halaman utama aplikasi.
+
+#### a) Menjalankan virual environment seperti di tutorial
+
+#### b) Membuat fungsi baru `register` yang menerima input request dalam file `views.py` di `main`
+
+#### c) Menambahkan import `redirect`, `UserCreationForm`, dan `messages` diatas dengan kode berikut:
+```py
+from django.shortcuts import redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages  
+```
+
+#### d) Menambahkan kode fungsi `register`, `login_user`, dan `logout_user` seperti berikut:
+Fungsi Register:
+```py
+def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
+    context = {'form':form}
+    return render(request, 'register.html', context)
+```
+Dengan menambahkan kode berikut kedalam fungsi register kita dapat membuat user baru dengan bantuan templates `UserCreationForm` dari Django.
+
+Fungsi login_user:
+```py
+def login_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            response = HttpResponseRedirect(reverse("main:show_main")) 
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
+        else:
+            messages.info(request, 'Sorry, incorrect username or password. Please try again.')
+    context = {}
+    return render(request, 'login.html', context)
+```
+Dengan kode diatas kita membuat fungsi yang bisa membuat `user` yang sudah `register` untuk `login` ke website kita dan mengakses website sesuai dengan data dari masing-masing `user`.
+
+Fungsi logout_user:
+```py
+def logout_user(request):
+    logout(request)
+    response = HttpResponseRedirect(reverse('main:login'))
+    response.delete_cookie('last_login')
+    return response
+```
+Dengan kode diatas  kita dapat `logout` dari tampilan website dan mengakhiri `cookiesnya`.
+
+#### e) Membuat file `regiter.html` dan `login.html` didalam folder `templates` dalam `main` dengan kode:
+FIle `register.html`:
+```html
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Register</title>
+{% endblock meta %}
+
+{% block content %}  
+
+<div class = "login">
+    
+    <h1>Register</h1>  
+
+        <form method="POST" >  
+            {% csrf_token %}  
+            <table>  
+                {{ form.as_table }}  
+                <tr>  
+                    <td></td>
+                    <td><input type="submit" name="submit" value="Daftar"/></td>  
+                </tr>  
+            </table>  
+        </form>
+
+    {% if messages %}  
+        <ul>   
+            {% for message in messages %}  
+                <li>{{ message }}</li>  
+                {% endfor %}  
+        </ul>   
+    {% endif %}
+
+</div>  
+
+{% endblock content %}
+```
+Dengan kode diatas kita dapat menampilkan tampilan untuk mendaftarkan user baru di website kita.
+
+File `login.html`:
+```html
+{% extends 'base.html' %}
+
+{% block meta %}
+    <title>Login</title>
+{% endblock meta %}
+
+{% block content %}
+
+<div class = "login">
+
+    <h1>Login To QemulShop</h1>
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <td>Username: </td>
+                <td><input type="text" name="username" placeholder="Username" class="form-control"></td>
+            </tr>
+                    
+            <tr>
+                <td>Password: </td>
+                <td><input type="password" name="password" placeholder="Password" class="form-control"></td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td><input class="btn login_btn" type="submit" value="Login"></td>
+            </tr>
+        </table>
+    </form>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}     
+        
+    Don't have an account yet? <a href="{% url 'main:register' %}">Register Now</a>
+
+</div>
+
+{% endblock content %}
+```
+Dengan kode diatas, `user` yang telah `register` dapat `login` di tampilan website kita.
+
+#### f) Menambahkan fungsi `register`, `login_user`, dan `logout_user` ke `urls.py` di `main` kita dengan cara menambahkan kode berikut:
+```py
+from main.views import register, login_user, logout_user
+```
+```py
+path('register/', register, name='register'),
+path('login/', login_user, name='login'),
+path('logout/', logout_user, name='logout'),
+```
+Dengan kode diatas kita mengimport fungsi `register`,`login_user`, dan `logout_user` dari `views.py` ke `urls.py` dalam `main`.
+
+### 2. Membuat dua akun pengguna dengan masing-masing tiga dummy data menggunakan model yang telah dibuat.
+
+#### a) Melakukan runserver pada komputer
+```sh
+python manage.py runserver
+```
+Dengan kode diatas kita membuat local host webisite buatan kita
+#### b) Mendaftarkan user baru dengan klik `Register Now` di tampilan website login
+__Tampilan login__
+<br>
+<img src = dokumen_tambahan\login.jpg>
+<br>
+
+#### c) Buatlah username dan password sesuai yang diinginkan tetapi sesuai aturan security lalu klik daftar.
+__Tampilan Register__
+<img src = dokumen_tambahan\register.jpg>
+<br>
+
+#### d) Login sesuai akun yang telah didaftarkan dan add item sesuai yang diinginkan. Maka hasil akhirnya akan seperti:
+__User 1__
+<img src = dokumen_tambahan\user1.jpg>
+<br>
+
+__User 2__
+<img src = dokumen_tambahan\user2.jpg>
+<br>
+
+### 3. Menghubungkan model Item dengan User.
+#### a) Menambahkan kode berikut kedalam `model.py` di `main`:
+```py
+from django.contrib.auth.models import User
+```
+```py
+class Item(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+```
+Dengan kode diatas kita dapat membuat relasi antar `user` dengan `Item` melalui `ForeignKey` dengan many to one relasi.
+
+#### b) Mengubah fungsi `add_item` seperti berikut:
+```py
+def add_item(request):
+    form = ItemForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        item = form.save(commit=False)
+        item.user = request.user
+        item.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "add_item.html", context)
+```
+Dengan kode berikut kita dapat memasangkan `Item` dari `form` sesuai dengan `user` yang `login`.
+
+#### c) Mengubah fungsi `show_main` seperti berikut:
+```py
+@login_required(login_url='/login')
+def show_main (request):
+    items = Item.objects.filter(user = request.user)
+    jumlah_barang = Item.objects.filter(user = request.user).aggregate(total = Sum("amount"))['total']
+    jumlah_item = Item.objects.filter(user = request.user).count()
+
+    if jumlah_barang == None:
+        jumlah_barang = 0
+
+    context = {
+        "Kata_Awal" : "Ayo Beli Yuk!",
+        "Nama" : request.user.username,
+```
+Dengan kode diatas `Item` dan info `user` nya akan tersimpan sesuai `user` yang `login`.
+
+#### d) Lalu lakukan `makemigrations` dan `migrate` dan submit `1` dan `1` untuk setiap perintah yang diminta.
+```sh
+python manage.py makemigrations
+python manage.py migrate
+```
+Dengan melakukan perubahan pada diatas maka kita sudah merubah `model.py` kita sesuai kode terbaru kita.
+
+<br>
+
 # TUGAS 3 PBP
 <hr>
 
 ## A. Perbedaan form `POST` dan form `GET` dalam Django
-
 Perbedaan utama antara form POST dan form GET dalam Django adalah cara data dikirimkan dari halaman web ke server:
 
 1. Form `POST` (HTTP method: POST):
@@ -89,11 +374,11 @@ Sebelum membuat form pastikan kita sudah punya base.html di template projek.
 #### a) Membuat file baru pada folder `main` dengan nama `forms.py` dengan isi kode seperti berikut:
 ```python
 from django.forms import ModelForm
-from main.models import Product
+from main.models import Item
 
 class ItemForm(ModelForm):
     class Meta:
-        model = Product
+        model = Item
         fields = ["name", "amount", "description"]
 ```
 
@@ -101,7 +386,7 @@ class ItemForm(ModelForm):
 
 ```python
 from django.http import HttpResponseRedirect
-from main.forms import ProductForm
+from main.forms import ItemForm
 from django.urls import reverse
 ```
 
@@ -149,7 +434,7 @@ Lalu juga ada kode untuk membuat Bonus poin (Berapa item dan Berapa jumlah).
 
 #### d) Menambahkan import fungsi baru dari `views.py` ke `urls.py` di `main` dan membuat `path route` baru untuk tampilan `add Item` dengan kode berikut:
 ```py
-from main.views import show_main, create_product
+from main.views import show_main, add_item
 ```
 ```py
 path('add-item', add_item, name='add_item')
@@ -159,7 +444,7 @@ path('add-item', add_item, name='add_item')
 {% extends 'base.html' %} 
 
 {% block content %}
-<h1>Add New Product</h1>
+<h1>Add New Item</h1>
 
 <form method="POST">
     {% csrf_token %}
@@ -168,7 +453,7 @@ path('add-item', add_item, name='add_item')
         <tr>
             <td></td>
             <td>
-                <input type="submit" value="Add Product"/>
+                <input type="submit" value="Add Item"/>
             </td>
         </tr>
     </table>
@@ -219,7 +504,7 @@ Dengan kode diatas kita membuat tampilan untuk menambahkan Item dalam form yang 
 
 <a href="{% url 'main:add_item' %}">
     <button>
-        Add New Product
+        Add New Item
     </button>
 </a>
 

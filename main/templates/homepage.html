@@ -4,8 +4,7 @@
 
 <h1>WELCOME TO QEMUL OLSHOP!!!</h1>
 
-<h3>Nama Aplikasi: </h3>
-<p>{{Nama_Aplikasi}}</p>
+<p>{{Kata_Awal}}</p>
 
 <h3>Nama: </h3>
 <p>{{Nama}}<p>
@@ -20,6 +19,9 @@
         <th>Name</th>
         <th>Amount</th>
         <th>Description</th>
+        <th>Add</th>
+        <th>Sub</th>
+        <th>Delete</th>
     </tr>
 
     {% comment %} Berikut cara memperlihatkan data produk di bawah baris ini {% endcomment %}
@@ -29,6 +31,9 @@
             <td>{{item.name}}</td>
             <td>{{item.amount}}</td>
             <td>{{item.description}}</td>
+            <td><a href = "{% url 'main:add_amount' item.id %}"> <button>+</button></a></td>
+            <td><a href = "{% url 'main:sub_amount' item.id %}"> <button>-</button></a></td>
+            <td><a href = "{% url 'main:delete_amount' item.id %}"> <button>X</button></a></td>
         </tr>
     {% endfor %}
 </table>
@@ -37,8 +42,15 @@
 
 <a href="{% url 'main:add_item' %}">
     <button>
-        Add New Product
+        Add New Item
     </button>
 </a>
-
+<br>
+<br>
+<a href="{% url 'main:logout' %}">
+    <button>
+        Logout
+    </button>
+</a>
+<h5>Sesi terakhir login: {{ last_login }}</h5>
 {% endblock content %}
