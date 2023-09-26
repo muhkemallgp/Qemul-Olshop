@@ -219,15 +219,18 @@ __Tampilan login__
 
 #### c) Buatlah username dan password sesuai yang diinginkan tetapi sesuai aturan security lalu klik daftar.
 __Tampilan Register__
+<br>
 <img src = dokumen_tambahan\register.jpg>
 <br>
 
 #### d) Login sesuai akun yang telah didaftarkan dan add item sesuai yang diinginkan. Maka hasil akhirnya akan seperti:
 __User 1__
+<br>
 <img src = dokumen_tambahan\user1.jpg>
 <br>
 
 __User 2__
+<br>
 <img src = dokumen_tambahan\user2.jpg>
 <br>
 
