@@ -1,19 +1,75 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
+{% comment %} {% load static %} {% endcomment %}
 
-{% block content %}
-<h1>Add New Item</h1>
+{% block meta %}
+    <title>Add Item</title>
+    <link rel="stylesheet"
+          href= "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .input-icons i {
+            position: start;
+        }
+         
+        .input-icons {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+         
+    </style>
+{% endblock meta %}
 
-<form method="POST">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-        <tr>
-            <td></td>
-            <td>
-                <input type="submit" value="Add Item"/>
-            </td>
-        </tr>
-    </table>
-</form>
+{% block navbar %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Container wrapper -->
+    
+    <div class="container-fluid">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-user fa-2x" style = "color:white;"></i>
+        </a>
 
-{% endblock %}
+        <ul class="dropdown-menu dropdown-menu-" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#">{{Nama}}</a></li>
+            <li><a class="dropdown-item" href="#">{{Kelas}}</a></li>
+        </ul>
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+            <a class="nav-link" href="#"><h4>Qemul Shop</h4></a>
+            </li>
+        </ul>
+    </div>
+    <div class="d-flex align-items-center">
+        <!-- Logout -->
+        <a class="text-reset me-3" href="{% url 'main:logout' %}">
+            <i class="fa fa-sign-out fa-2x" style="color:white;"></i>
+        </a>
+    </div>
+</nav>
+  <!-- Navbar -->
+{% endblock navbar %}
+
+
+{% block content %}  
+
+<div center style = "margin-top:100px; text-align:center">
+    <h1 class = "title text-center">{{heading}}</h1>  
+
+    <form method="POST" actione="." style="max-width:450px;margin:auto" id="register-form"> 
+        {% csrf_token %} 
+        
+            <div class="input-icons">
+                {{form.name}} 
+            </div>
+            <div class="input-icons"> 
+                {{form.amount}} 
+            </div> 
+            <div class="input-icons"> 
+                {{form.description}} 
+            </div> 
+
+            <input type="submit" class="submit" value="{{value_button}}" style = "width:200px;"> 
+    </form> 
+</div>
+
+{% endblock content %}

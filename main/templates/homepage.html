@@ -1,56 +1,102 @@
 {% extends 'base.html' %}
+{% comment %} {% load static %} {% endcomment %}
+
+
+{% block meta %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock meta %}
+    
+{% block navbar %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Container wrapper -->
+    
+    <div class="container-fluid">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-user fa-2x" style = "color:white;"></i>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#">{{Nama}}</a></li>
+            <li><a class="dropdown-item" href="#">{{Kelas}}</a></li>
+        </ul>
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+            <a class="nav-link" href="#"><h4>Qemul Shop</h4></a>
+            </li>
+        </ul>
+    </div>
+      <!-- Collapsible wrapper -->
+  
+      <!-- Add Item -->
+    <div class="d-flex align-items-center">
+        <!-- Icon -->
+        <a class="text-reset me-3" href="{% url 'main:add_item' %}">
+          <i class="fa fa-shopping-cart fa-2x" style = "color:white;"></i>
+        </a>
+        
+        <!-- Logout -->
+        <a class="text-reset me-3" href="{% url 'main:logout' %}">
+            <i class="fa fa-sign-out fa-2x" style="color:white;"></i>
+        </a>
+    </div>
+    <!-- Container wrapper -->
+</nav>
+  <!-- Navbar -->
+{% endblock navbar %}
 
 {% block content %}
-
-<h1>WELCOME TO QEMUL OLSHOP!!!</h1>
-
-<p>{{Kata_Awal}}</p>
-
-<h3>Nama: </h3>
-<p>{{Nama}}<p>
-
-<h3>Kelas: </h3>
-<p>{{Kelas}}<p>
-
-<h3>Kamu memiliki {{jumlah_jenis}} item dengan total {{jumlah_barang}} buah</h3>
-
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Amount</th>
-        <th>Description</th>
-        <th>Add</th>
-        <th>Sub</th>
-        <th>Delete</th>
-    </tr>
-
-    {% comment %} Berikut cara memperlihatkan data produk di bawah baris ini {% endcomment %}
-
-    {% for item in items %}
-        <tr>
-            <td>{{item.name}}</td>
-            <td>{{item.amount}}</td>
-            <td>{{item.description}}</td>
-            <td><a href = "{% url 'main:add_amount' item.id %}"> <button>+</button></a></td>
-            <td><a href = "{% url 'main:sub_amount' item.id %}"> <button>-</button></a></td>
-            <td><a href = "{% url 'main:delete_amount' item.id %}"> <button>X</button></a></td>
-        </tr>
-    {% endfor %}
-</table>
-
-<br />
-
-<a href="{% url 'main:add_item' %}">
-    <button>
-        Add New Item
-    </button>
-</a>
-<br>
-<br>
-<a href="{% url 'main:logout' %}">
-    <button>
-        Logout
-    </button>
-</a>
-<h5>Sesi terakhir login: {{ last_login }}</h5>
+<div class = "container py-5">
+    <h3 class="text-center">Hore!! Kamu Memiliki {{jumlah_jenis}} Item Dengan Total {{jumlah_barang}} Buah ?!</h3>
+    <div class="row row-cols-1 row-cols-md-3 g-4 py-5">
+        {% for item in items  %}
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style = "background-color:gray">
+                    {{item.name}}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{item.name}}</h5>
+                    <p class="card-text">{{item.description}}</p>
+                </div>
+                <div class="text-center">
+                    <h3>{{item.amount}}</h3>
+                </div>
+                <div class="card-body" style = "background-color:gray">
+                    <a href="{% url 'main:add_amount' item.id %}" class="btn btn-dark">+</a>
+                    <a href = "{% url 'main:sub_amount' item.id %}" class ="btn btn-dark">-</a>
+                    <a href = "{% url 'main:edit_product' item.pk %}" class ="btn btn-dark">?</a>
+                    <a href = "{% url 'main:delete_amount' item.id %}" class ="btn btn-dark">x</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header" style = "background-color:black; color:white">
+                    {{item_akhir.name}}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" style="color:red">{{item_akhir.name}}</h5>
+                    <p class="card-text" style="color:red">{{item_akhir.description}}</p>
+                </div>
+                <div class="text-center" style="color:red">
+                    <h3>{{item_akhir.amount}}</h3>
+                </div>
+                <div class="card-body" style = "background-color:black">
+                    <a href="{% url 'main:add_amount' item_akhir.id %}" class="btn btn-secondary">+</a>
+                    <a href = "{% url 'main:sub_amount' item_akhir.id %}" class ="btn btn-secondary">-</a>
+                    <a href = "{% url 'main:edit_product' item_akhir.pk %}" class ="btn btn-secondary">?</a>
+                    <a href = "{% url 'main:delete_amount' item_akhir.id %}" class ="btn btn-secondary">x</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer style = "bottom: 0%; position: fixed;">
+    <p style ="height:10px">Sesi terakhir login: {{ last_login }}</p>
+</footer>
 {% endblock content %}
+
+

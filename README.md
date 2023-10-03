@@ -1,3 +1,145 @@
+# TUGAS 5 PBP
+## A. Element Selector
+#### Element Selector (tag)
+Selector ini memungkinkan kita untuk memilih elemen HTML berdasarkan tipe tag. Ini adalah selektor yang paling umum digunakan dan bisa digunakan dalam hampir semua kasus. Misalnya, jika kita ingin mengganti gaya semua elemen p pada halaman, kita bisa menggunakan selector p. 
+
+Waktu yang tepat untuk menggunakannya adalah saat kita ingin mengganti gaya pada seluruh elemen dengan tipe tag yang sama.
+
+#### Class Selector (.class)
+Class selector memungkinkan kita untuk memilih elemen berdasarkan nilai atribut class. Ini berguna saat kita ingin mengganti gaya beberapa elemen yang memiliki kelas yang sama, tetapi tidak semua elemen dengan tipe tag yang sama harus diubah gayanya. Class selector sangat fleksibel dan sering digunakan dalam pengembangan web.
+
+#### ID Selector (#id)
+ID selector memungkinkan kita untuk memilih elemen berdasarkan nilai atribut id. ID seharusnya unik dalam halaman, jadi kita biasanya menggunakannya untuk mengidentifikasi elemen tertentu. Ini cocok digunakan ketika kita ingin mengganti gaya satu elemen tertentu.
+
+#### Attribute Selector ([attribute])
+Attribute selector memungkinkan kita untuk memilih elemen berdasarkan atribut mereka. kita bisa memilih elemen yang memiliki atribut tertentu, misalnya, 
+```html
+<a href="...">
+``` 
+dengan [href] selector. kita juga bisa menggunakan selector ini dengan nilai atribut tertentu, misalnya, [href="https://example.com"].
+
+## B. HTML5 
+HTML adalah bahasa markup yang digunakan untuk membuat halaman web. HTML5 adalah versi terbaru dari HTML yang menghadirkan sejumlah perbaikan dan fitur baru, seperti dukungan untuk video dan audio langsung, grafik vektor, dan penyimpanan lokal. 
+
+Kelebihan HTML5 meliputi peningkatan kinerja, kompatibilitas lintas peramban yang lebih baik, dan kemampuan untuk mengembangkan aplikasi web yang lebih interaktif dan canggih tanpa perlu plugin tambahan seperti Flash. Hal ini membuat HTML5 menjadi pilihan utama dalam pengembangan web modern.
+
+Beberapa tag HTML5 yang umum digunakan adalah:
+
+- `<header>`: Digunakan untuk bagian atas halaman web, biasanya berisi judul atau logo.
+
+- `<nav>`: Digunakan untuk menampilkan menu navigasi.
+
+- `<section>`: Digunakan untuk membagi konten dalam sebuah halaman.
+
+- `<article>`: Digunakan untuk mempresentasikan konten independen yang dapat berdiri sendiri.
+
+- `<aside>`: Digunakan untuk konten yang terkait dengan konten lain, seperti sidebar.
+
+- `<footer>`: Digunakan untuk bagian bawah halaman, seringkali berisi informasi kontak atau hak cipta.
+
+- `<figure>`: Digunakan untuk menyertakan media seperti gambar atau grafik, sering digunakan dengan `<figcaption>`.
+
+## C. Margin dan Padding
+#### Margin
+Margin adalah jarak antara batas elemen dengan elemen lain di sekitarnya. Margin tidak memiliki background atau warna, dan biasanya digunakan untuk mengatur jarak antara elemen-elemen. Margin akan memengaruhi elemen secara eksternal.
+
+#### Padding
+Padding adalah jarak antara batas elemen dengan kontennya sendiri. Padding akan memengaruhi elemen secara internal, yaitu jarak antara batas elemen dan kontennya. Padding digunakan untuk mengatur ruang di dalam elemen.
+
+Contoh Implementasi:
+
+![Alt text](/dokumen_tambahan/Tugas%205/image.png)
+
+## D. CSS _Tailwind_ dan _Bootstrap_
+#### Tailwind CSS
+Tailwind adalah framework CSS yang memungkinkan kita untuk merancang tampilan web dengan memanfaatkan kelas-kelas utilitas yang telah ditentukan. Ini memberikan kontrol yang sangat detail dan fleksibilitas dalam mengatur tampilan. Tailwind cocok digunakan ketika kita ingin merancang tampilan yang sangat kustom dan memiliki pemahaman yang baik tentang CSS.
+
+#### Bootstrap
+Bootstrap adalah framework CSS yang menyediakan komponen dan kelas yang telah siap digunakan untuk merancang tampilan web yang responsif. Ini adalah solusi cepat untuk membangun tampilan yang konsisten dan bersih tanpa banyak kustomisasi CSS. Bootstrap cocok digunakan saat kita ingin membuat prototipe cepat atau membangun situs web tanpa harus menulis banyak kode CSS dari awal.
+
+Jika kita ingin cepat membangun tampilan responsif dengan sedikit usaha kustomisasi, Bootstrap bisa menjadi pilihan yang baik. 
+
+Jika kita ingin tampilan yang sangat kustom dan lebih mendalam dalam pemahaman CSS, Tailwind bisa lebih sesuai.
+
+
+## E. Implementasi Checklist
+### 1. Kustomisasi halaman `login`, `register`, dan `add_item` semenarik mungkin.
+Sebelum kustomisasi `login`, `register`, dan `add_item` saya mencopy link dan script bootstrap dari websitenya ke `base.html` agar dapat terdeteksi atribut dari bootstrapnya.
+
+Saya juga meload static karena di navbar saya ada menggunakan gambar static.
+
+#### a) Halaman `login`:
+1. Membuat navbar template di `base.html` agar tidak usah melakukannya disetiap page.
+2. Membuat beberapa _div_ sesuai konten sehingga tampilan login saya berada ditengah page.
+3. Merubah class button saya menjadi `btn-primary`.
+4. Menambahkan `footer` sebagai penanda bahwa ini adalah website `qemulshop`.
+
+Tampilan `login`:
+![Alt text](/dokumen_tambahan/Tugas%205/image-1.png)
+
+#### b) Halaman `register`:
+1.  Membuat _div_ sebagai keseluruhan page dahulu.
+2. Membuat class baru di `forms.py` di  main untuk menambahkan setiap atribut yang dimiliki oleh model `UserCreationForm`. Untuk menyesuaikan styling.
+```py
+...
+ def __init__(self, *args, **kwargs): 
+        super().__init__(*args, **kwargs) 
+        self.fields['username'].widget.attrs.update({ 
+            'class': 'input-field', 
+            'required':'', 
+            'name':'username', 
+            'id':'username', 
+            'type':'text', 
+            'placeholder':'Username', 
+            'maxlength': '16', 
+            'minlength': '6', 
+            }) 
+...
+```
+Dengan kode diatas kita menupdate atribute dan syarat dari username dapat dibentuk.
+
+3. Memasukkan icon-icon dari `fa-fa` website dengan mengarahkannya berada di area inputan. 
+4. Memberikan styling secaran internal dan inline untuk membuat tampilan menjadi lebih sesuai.
+
+Tampilan `register`:
+![Alt text](/dokumen_tambahan/Tugas%205/image-2.png)
+
+#### c) Halaman `add_item` atau tambah inventori.
+1. Menambahkan navbar yang sudah di ada dari `homepage`, tetapi di ubah untuk menyesuaikan.
+2. Menambahkan update atribut untuk ItemForm seperti:
+```py
+...
+def __init__(self, *args, **kwargs): 
+        super().__init__(*args, **kwargs) 
+        self.fields['name'].widget.attrs.update({ 
+            'class': 'form-control', 
+            'name':'name', 
+            'id':'name', 
+            'type':'text', 
+            'placeholder':'Nama Barang', 
+            })
+...
+```
+
+Dengan kode diatas kita juga menupdate atribut dari masing-masing fields yang ada di model Item agar sesuai dengan styling yang ingin kita jalankan.
+
+Tampilan `add_item`:
+![Alt text](/dokumen_tambahan/Tugas%205/image-3.png)
+
+3. Merubah layout _forms_ yang awalnya menggunakan table menjadi _div_ dan mengubah class dari _div_-nya.
+
+### 2. Kustomisasi halaman daftar inventori menjadi lebih berwarna maupun menggunakan apporach lain seperti menggunakan Card.
+1. Mengedit navbar agar ada nama website, user, add_item, dan logout.
+2. Membuat invetori menjadi sebuah card. Dalam hal ini saya memanfaatkan loop for design card yang sama.
+3. Menambahkan fungsi, file html, dan button edit inventori yang dipelajari tutorial sebelumnya.
+4. Menambahkan last sesi login menjadi footer.
+5. Lalu diakhir merubah sedikit design index objek terakhir (Untuk Bonus Poin).
+
+Tampilan `homepage`:
+![Alt text](/dokumen_tambahan/Tugas%205/image-4.png)
+
+<br>
+
 # TUGAS 4 PBP
 <hr>
 
@@ -13,7 +155,7 @@ Kelebihan dari `UserCreationForm` meliputi:
 
 Beberapa kekurangan `UserCreationForm` meliputi:
 
-#### Tampilan Default: Form ini memiliki tampilan default yang sederhana, jadi jika Anda ingin menyesuaikan tampilan sesuai dengan kebutuhan aplikasi Anda, Anda perlu menambahkan kode tambahan.
+#### Tampilan Default: Form ini memiliki tampilan default yang sederhana, jadi jika kita ingin menyesuaikan tampilan sesuai dengan kebutuhan aplikasi kita, kita perlu menambahkan kode tambahan.
 
 ## B. Autentikasi dan Otorisasi
 __Autentikasi__ dan __otorisasi__ adalah dua konsep penting dalam pengembangan web, termasuk dalam konteks Django:
@@ -41,7 +183,7 @@ Jika cookies digunakan untuk menyimpan token otentikasi atau informasi sensitif 
 #### 3) Cookie Theft (Pencurian Cookie)
 Peretas dapat mencuri cookies dari perangkat pengguna melalui serangan seperti cross-site scripting (XSS) atau man-in-the-middle (MITM) attack.
 
-Penting untuk mengimplementasikan cookies dengan bijak dan mempertimbangkan keamanan serta privasi pengguna dalam pengembangan aplikasi web Anda. Selain itu, Anda dapat menggunakan teknik seperti enkripsi dan HTTPS untuk meningkatkan keamanan cookies dan data yang disimpan di dalamnya.
+Penting untuk mengimplementasikan cookies dengan bijak dan mempertimbangkan keamanan serta privasi pengguna dalam pengembangan aplikasi web kita. Selain itu, kita dapat menggunakan teknik seperti enkripsi dan HTTPS untuk meningkatkan keamanan cookies dan data yang disimpan di dalamnya.
 
 ## E. Tatacara Implementasi
 ### 1. Mengimplementasikan fungsi registrasi, login, dan logout ditambah dengan menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last login pada halaman utama aplikasi.

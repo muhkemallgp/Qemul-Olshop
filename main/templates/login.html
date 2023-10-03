@@ -5,41 +5,51 @@
 {% endblock meta %}
 
 {% block content %}
-
-<div class = "login">
-
-    <h1>Login To QemulShop</h1>
-
-    <form method="POST" action="">
-        {% csrf_token %}
-        <table>
-            <tr>
-                <td>Username: </td>
-                <td><input type="text" name="username" placeholder="Username" class="form-control"></td>
-            </tr>
-                    
-            <tr>
-                <td>Password: </td>
-                <td><input type="password" name="password" placeholder="Password" class="form-control"></td>
-            </tr>
-
-            <tr>
-                <td></td>
-                <td><input class="btn login_btn" type="submit" value="Login"></td>
-            </tr>
-        </table>
-    </form>
-
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}     
+{% comment %} <section class="vh-100"> {% endcomment %}
+<div class="tab-content" style="margin-top: 100px;">
+    <div class = "form-control">
+        <h1 style="text-align: center; margin-top: 30px;">Login To QemulShop</h1>
         
-    Don't have an account yet? <a href="{% url 'main:register' %}">Register Now</a>
+        <div class= "tab-pane fade show active" style="justify-content: center; display: flex; margin-top: 30px;">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td>Username: </td>
+                        <td><input type="text" name="username" placeholder="Username" class="form-control"></td>
+                    </tr>
+                            
+                    <tr>
+                        <td>Password: </td>
+                        <td><input type="password" name="password" placeholder="Password" class="form-control"></td>
+                    </tr>
+                </table>
 
+                <div class="d-flex align-items-center justify-content-center pb-4" style="margin-top: 10px;"> 
+                    <input class="btn btn-primary" type="submit" value="Login" style="width: 250px;">
+                </div>
+            </form>
+        </div>
+           
+        <div class="d-flex align-items-center justify-content-center pb-4" style="margin-top:5px">
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}     
+        </div>
+
+        <div class="d-flex align-items-center justify-content-center pb-4">
+            Don't have an account yet? <a href="{% url 'main:register' %}">Register Now</a>
+        </div>
+    </div>
+    
 </div>
+<footer style = "bottom: 0%; position: fixed; background-color:gray;">
+    <p style ="color:white; height:10px">Copyright ©QEMUL.INC. All rights reserved.</p>
+</footer>
+{% comment %} </section> {% endcomment %}
 
-{% endblock content %}
+{% endblock content %} 

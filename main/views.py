@@ -3,7 +3,7 @@ from django.db.models import Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from main.models import Item
-from main.forms import ItemForm
+from main.forms import ItemForm, RegisterForm
 from django.urls import reverse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages  
@@ -16,9 +16,11 @@ import datetime
 # Create your views here.
 @login_required(login_url='/login')
 def show_main (request):
-    items = Item.objects.filter(user = request.user)
-    jumlah_barang = Item.objects.filter(user = request.user).aggregate(total = Sum("amount"))['total']
     jumlah_item = Item.objects.filter(user = request.user).count()
+    items = Item.objects.filter(user = request.user)[:jumlah_item-1]
+    item_akhir = Item.objects.filter(user = request.user).last()
+    jumlah_barang = Item.objects.filter(user = request.user).aggregate(total = Sum("amount"))['total']
+    
 
     if jumlah_barang == None:
         jumlah_barang = 0
@@ -28,6 +30,7 @@ def show_main (request):
         "Nama" : request.user.username,
         "Kelas" : "PBP - D",
         "items"  : items,
+        "item_akhir": item_akhir,
         "jumlah_jenis" : jumlah_item,
         "jumlah_barang" : jumlah_barang,
         'last_login': request.COOKIES['last_login'],
@@ -35,10 +38,10 @@ def show_main (request):
     return render(request,"homepage.html",context)
 
 def register(request):
-    form = UserCreationForm()
+    form = RegisterForm()
 
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been successfully created!')
@@ -86,6 +89,25 @@ def delete_amount(request,id):
     jumlah = Item.objects.get(pk=id)
     jumlah.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
+
+def edit_product(request, id):
+    # Get product berdasarkan ID
+    product = Item.objects.get(pk = id)
+
+    # Set product sebagai instance dari form
+    form = ItemForm(request.POST or None, instance=product)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form,
+               "Nama" : request.user.username,
+                "heading": "Edit Item!",
+                "value_button":"Edit Item",
+                "Kelas" : "PBP - D",}
+    return render(request, "edit_product.html", context)
     
 
 @login_required(login_url='/login')
@@ -98,7 +120,11 @@ def add_item(request):
         item.save()
         return HttpResponseRedirect(reverse('main:show_main'))
 
-    context = {'form': form}
+    context = { 'form': form,
+                "Nama" : request.user.username,
+                "heading": "Add Item!",
+                "value_button":"Add Item",
+                "Kelas" : "PBP - D",}
     return render(request, "add_item.html", context)
 
 @login_required(login_url='/login')
