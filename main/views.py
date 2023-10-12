@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db.models import Sum
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.core import serializers
 from main.models import Item
 from main.forms import ItemForm, RegisterForm
@@ -9,6 +9,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages  
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 import datetime
 
@@ -17,10 +18,13 @@ import datetime
 @login_required(login_url='/login')
 def show_main (request):
     jumlah_item = Item.objects.filter(user = request.user).count()
-    items = Item.objects.filter(user = request.user)[:jumlah_item-1]
+    if(jumlah_item != 0):
+        items = Item.objects.filter(user = request.user)[:jumlah_item-1]
+    else:
+        items = Item.objects.filter(user = request.user)
+    
     item_akhir = Item.objects.filter(user = request.user).last()
     jumlah_barang = Item.objects.filter(user = request.user).aggregate(total = Sum("amount"))['total']
-    
 
     if jumlah_barang == None:
         jumlah_barang = 0
@@ -70,6 +74,31 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
+def get_items_json(request):
+    items = Item.objects.filter(user = request.user)
+    if(items != None):
+        return HttpResponse(serializers.serialize('json', items))
+    return HttpResponse(0)
+
+def get_all_amount(request):
+    jumlah_barang = Item.objects.filter(user = request.user).aggregate(total = Sum("amount"))['total']
+    return HttpResponse(jumlah_barang)
+
+@csrf_exempt
+def add_items_ajax(request):
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        amount = request.POST.get("amount")
+        description = request.POST.get("description")
+        user = request.user
+
+        new_item = Item(name=name, amount=amount, description=description, user=user)
+        new_item.save()
+
+        return HttpResponse(b"CREATED", status=201)
+
+    return HttpResponseNotFound()
+
 def add_amount(request,id):
     jumlah = Item.objects.get(pk =id)
     jumlah.amount+=1
@@ -89,6 +118,15 @@ def delete_amount(request,id):
     jumlah = Item.objects.get(pk=id)
     jumlah.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
+
+@csrf_exempt
+def delete_items_ajax(request,id):
+    if request.method == 'DELETE':
+        jumlah = Item.objects.get(pk=id)
+        jumlah.delete()
+        return HttpResponse(b"DELETE", status=201)
+    
+    return HttpResponseNotFound()
 
 def edit_product(request, id):
     # Get product berdasarkan ID

@@ -1,3 +1,244 @@
+# TUGAS 6 PBP
+## A. Asynchronous Programming dan Synchronous Programming
+#### Synchronous Programming
+Pada synchronous programming, kode dieksekusi secara berurutan, satu perintah setelah yang lain. Artinya, jika ada operasi yang memakan waktu, seperti mengambil data dari server atau melakukan I/O (Input/Output), program akan terhenti dan menunggu operasi tersebut selesai sebelum melanjutkan eksekusi kode berikutnya. Ini dapat mengakibatkan aplikasi menjadi lambat dan tidak responsif jika ada operasi yang memakan waktu.
+
+#### Asynchronous Programming
+Pada asynchronous programming, kode dieksekusi secara non-blokcing. Ini berarti, ketika ada operasi yang memakan waktu, kode tidak akan berhenti dan menunggu operasi tersebut selesai. Sebaliknya, kode akan melanjutkan eksekusi dan berfungsi secara independen. Ketika operasi selesai, callback atau promise akan dipanggil untuk menangani hasil operasi tersebut. Ini membuat aplikasi lebih responsif dan efisien dalam menangani tugas-tugas yang memakan waktu.
+
+## B. Event-Driven Programming dalam JavaScript dan AJAX
+Paradigma event-driven programming mengacu pada pendekatan pemrograman di mana tugas-tugas atau fungsi dieksekusi sebagai respons terhadap peristiwa (events) yang terjadi dalam program. Dalam JavaScript dan AJAX, ini berarti mengaktifkan fungsi tertentu ketika suatu peristiwa terjadi, seperti mengklik tombol, mengirim permintaan HTTP ke server, atau menerima respons dari server.
+
+Contoh penerapannya dalam tugas ini bisa berupa penggunaan event listener (_onclick_) dalam JavaScript untuk merespons klik tombol atau menangani respons dari permintaan AJAX.
+
+## C. Asynchronous Programming pada AJAX
+- Pada AJAX, asynchronous programming sangat penting karena permintaan HTTP ke server seringkali memakan waktu yang tidak dapat diprediksi. Penerapan asynchronous programming memungkinkan aplikasi untuk tetap responsif sambil menunggu respons dari server.
+
+- Dalam JavaScript, ini dapat dicapai menggunakan teknik seperti callback functions, Promises, atau async/await untuk mengelola respons dari permintaan AJAX.
+
+## D. Fetch API dan jQuery
+#### Fetch API
+Ini adalah API bawaan dalam JavaScript yang memungkinkan untuk mengirim permintaan HTTP secara asynchronous. Fetch API mudah digunakan, memiliki sintaks yang bersih, dan mendukung Promise, yang membuatnya cocok untuk penerapan asynchronous programming. Namun, Fetch API mungkin memerlukan lebih banyak kode untuk penggunaan yang lebih kompleks.
+
+#### jQuery
+jQuery adalah library JavaScript yang sudah ada sejak lama. Ini memiliki fungsi AJAX yang sangat mudah digunakan dan menyediakan antarmuka yang lebih tingkat. Namun, jQuery adalah library tambahan yang memerlukan pengunduhan dan pemeliharaan, sementara Fetch API adalah bagian dari JavaScript modern.
+
+#### Pendapat Pribadi
+Pilihan antara Fetch API dan jQuery tergantung pada kebutuhan dan preferensi kita. Jika kita ingin menggunakan pendekatan yang lebih modern dan hanya memerlukan fitur AJAX sederhana, maka Fetch API adalah pilihan yang baik. Namun, jika kita sudah memiliki pengalaman dengan jQuery atau memerlukan dukungan lintas browser yang lebih baik, kita mungkin memilih jQuery. Namun, perlu diingat bahwa ekosistem JavaScript terus berkembang, jadi penting untuk selalu mempertimbangkan teknologi terbaru dan terbaik untuk tugas kita.
+
+## E. Implementasi Checklist
+### 1. Menampilkan Item Cards dengan AJAX GET dan Membuat fungsi _add_item by ajax_
+#### a) Membuat fungsi yang mereturn data Json untuk di fetch pada `homepage.html`
+```py
+def get_items_json(request):
+    items = Item.objects.filter(user = request.user)
+    if(items != None):
+        return HttpResponse(serializers.serialize('json', items))
+    return HttpResponse(0)
+```
+Dari kode diatas saya mengecek dulu jika ada atau tidak nya data dari database saya. Jika ada baru akan dipassing ke homepage.html dalam bentuk json file. Jika tidak maka hanya akan mereturn angka 0.
+
+#### b) Membuat fungsi `add_items_ajax` yang digunakan untuk menambahkan item kedalam database kita secara langsung (ajax) tanpa pindah page.
+```py
+@csrf_exempt
+def add_items_ajax(request):
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        amount = request.POST.get("amount")
+        description = request.POST.get("description")
+        user = request.user
+
+        new_item = Item(name=name, amount=amount, description=description, user=user)
+        new_item.save()
+
+        return HttpResponse(b"CREATED", status=201)
+
+    return HttpResponseNotFound()
+```
+Dari kode diatas saya mendapatkan atribut dari data Item yang ingin ditambahkan kedalam database dari forms yang berada di modal di homepage.html.
+
+#### c) Menambahkan path kedua fungsi diatas kedalam `urls.py` di `main`.
+```py
+...
+.... get_item_json,add_item_ajax
+...
+path('get-items/', get_items_json, name='get_items_json'),
+path('create-ajax/', add_items_ajax, name='add_items_ajax'),
+```
+Dari kode diatas berarti kita import fungsi yang telah kita buat kedalam urls.py dan menambahkan path untuk masing-masing fungsi yang telah kita buat.
+
+#### d) Menampikan cards Item dengan ajax
+- Pertama saya membuat function script js untuk menfetch json data item dari user yang login dengan kode:
+    ```js
+    async function getItems() {
+            return fetch("{% url 'main:get_items_json' %}").then((res) => res.json())
+        }
+    ```
+- Menambahkan id dalam div atau kontainer yang ingin kita tampilkan cardsnya:
+    ```html
+    <div class = "container py-5">
+        <h3 class="text-center" id = judul></h3>
+        <div class="row row-cols-1 row-cols-md-3 g-4 py-5" id = items_cards></div>
+    </div>
+    ```
+- Lalu membuat fungsi untuk menampilkan cards itemnya dengan kode berikut:
+    ```js
+    async function refreshItems() {
+        var jumlah_item,item_awal,item_akhir, all_amount
+        document.getElementById("items_cards").innerHTML = ""
+        // indexing item dari satu sampai last minus satu dan last
+        const items = await getItems()
+        
+        if(items != 0){
+            jumlah_item = items.length
+            item_awal = items.slice(0,jumlah_item-1)
+            item_akhir = items[jumlah_item-1]
+
+            console.log(items)
+            console.log(item_awal)
+            console.log(item_akhir)
+
+            all_amount = await getAllAmount()
+            document.getElementById("judul").style = "margin-top:0px"
+            document.getElementById("judul").innerHTML = `Hore!! Kamu Memiliki ${jumlah_item} Item Dengan Total ${all_amount} Buah ?!`
+        }else{
+            document.getElementById("judul").style = "margin-top:150px"
+            document.getElementById("judul").innerHTML = `Sayang Sekali Kamu Belum Ada Penambahan Item Nih!`
+            return
+        } 
+        
+        let htmlString = ``
+        item_awal.forEach((item) => {
+            htmlString += `\n
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header" style = "background-color:gray">
+                        ${item.fields.name}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${item.fields.name}</h5>
+                        <p class="card-text">${item.fields.description}</p>
+                    </div>
+                    <div class="text-center">
+                        <h3>${item.fields.amount}</h3>
+                    </div>
+                    <div class="card-body" style = "background-color:gray">
+                        <a href="add-amount/${item.pk}" class="btn btn-dark">+</a>
+                        <a href = "sub-amount/${item.pk}" class ="btn btn-dark">-</a>
+                        <a href = "edit-product/${item.pk}" class ="btn btn-dark">?</a>
+                        <a class ="btn btn-dark" onclick="deleteItems(${item.pk})">x</a>
+                    </div>
+                </div>
+            </div>` 
+        })
+        htmlString += `\n
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header" style = "background-color:black; color:white">
+                        ${item_akhir.fields.name}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" style = "color:red">${item_akhir.fields.name}</h5>
+                        <p class="card-text" style = "color:red">${item_akhir.fields.description}</p>
+                    </div>
+                    <div class="text-center" style = "color:red">
+                        <h3>${item_akhir.fields.amount}</h3>
+                    </div>
+                    <div class="card-body" style = "background-color:black">
+                        <a href="add-amount/${item_akhir.pk}" class="btn btn-secondary">+</a>
+                        <a href = "sub-amount/${item_akhir.pk}" class ="btn btn-secondary">-</a>
+                        <a href = "edit-product/${item_akhir.pk}" class ="btn btn-secondary">?</a>
+                        <a class ="btn btn-secondary" onclick="deleteItems(${item_akhir.pk})">x</a>
+                    </div>
+                </div>
+            </div>`
+
+        document.getElementById("items_cards").innerHTML = htmlString
+    }
+    refreshItems()
+    ```
+    Dengan kode diatas berarti kita memindahkan kode html kita yang menampilkan cards ke dalam script ini. Oleh karena itu kode html kita yang asli bisa dihapus.
+
+    Tampilan cards pun akan muncul dengan memanfaatkan `ajax get`
+
+#### Note:
+Penggunaan ajax dalam kode diatas adalah ketika kita memulai function menggunakan `async` dan memanggilnya diawali dengan `await` atau bisa kita menggunakan langsung function yang mengfetch url atau path dari `urls.py` yang ingin kita tampilkan.
+
+### 2. Menampilkan Modal Form dan menambahkan item ke dalam cards kita dengan AJAX POST
+#### a) Membuat Modal Form untuk menambahkan Item tanpa harus berpindah page.
+```html
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form" onsubmit="return false;">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name"></input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="col-form-label">Amount:</label>
+                        <input type="number" class="form-control" id="amount" name="amount"></input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="description" name="description"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Item</button>
+            </div>
+        </div>
+    </div>
+</div>
+```
+Dengan kode diatas kita menampilkan pop up page untuk kita bisa add_item kita secara langsung.
+#### b) Memasangkan button untuk menampilkan Modal Form kedalam navbar yang sudah dibuat sebelumnya
+```html
+<!-- Icon -->
+        <a class="text-reset me-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <i class="fa fa-shopping-cart fa-2x" style = "color:white;"></i>
+        </a>
+```
+Dengan kode diatas kita menambahkan toggle modal dengan target modal yang telah kita buat sebelumnya di dalam icon kita.
+
+#### c) Menambahkan fungsi js dan button untuk menambahkan item kita secara ajax (AJAX POST)
+```js
+ function addItems() {
+        fetch(`/create-ajax/`, {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        }).then(refreshItems)
+
+        document.getElementById("form").reset()
+        return false
+    }
+```
+```js
+ document.getElementById("button_add").onclick = addItems
+
+```
+Dengan kode diatas kita membuat fungsi yang mengfetch path yang telah kita buat sebelumnya dan membuat item baru dengan mengambil data dari modal form yang memiliki id = form. Lalu menampilkan tampilan card items yang sudah ditambahkan.
+### 3. Perintah collectstatic
+Menambahkan kode ini didalam settings.py:
+```py
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+```
+Lalu mengetik ini di cmd/terminal untuk mengumpulkan file file static kita.
+```sh
+python manage.py collecstatic
+```
+<br>
+
+
+
 # TUGAS 5 PBP
 ## A. Element Selector
 #### Element Selector (tag)

@@ -1,6 +1,4 @@
 {% extends 'base.html' %}
-{% comment %} {% load static %} {% endcomment %}
-
 
 {% block meta %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -8,22 +6,22 @@
     
 {% block navbar %}
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar  navbar-expand-lg navbar-dark bg-dark">
     <!-- Container wrapper -->
     
     <div class="container-fluid">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa fa-user fa-2x" style = "color:white;"></i>
         </a>
 
         <ul class="dropdown-menu dropdown-menu-" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">{{Nama}}</a></li>
-            <li><a class="dropdown-item" href="#">{{Kelas}}</a></li>
+            <li><a class="dropdown-item">{{Nama}}</a></li>
+            <li><a class="dropdown-item">{{Kelas}}</a></li>
         </ul>
 
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-            <a class="nav-link" href="#"><h4>Qemul Shop</h4></a>
+            <a class="nav-link"><h4>Qemul Shop</h4></a>
             </li>
         </ul>
     </div>
@@ -32,7 +30,7 @@
       <!-- Add Item -->
     <div class="d-flex align-items-center">
         <!-- Icon -->
-        <a class="text-reset me-3" href="{% url 'main:add_item' %}">
+        <a class="text-reset me-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
           <i class="fa fa-shopping-cart fa-2x" style = "color:white;"></i>
         </a>
         
@@ -48,55 +46,148 @@
 
 {% block content %}
 <div class = "container py-5">
-    <h3 class="text-center">Hore!! Kamu Memiliki {{jumlah_jenis}} Item Dengan Total {{jumlah_barang}} Buah ?!</h3>
-    <div class="row row-cols-1 row-cols-md-3 g-4 py-5">
-        {% for item in items  %}
-        <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style = "background-color:gray">
-                    {{item.name}}
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">{{item.name}}</h5>
-                    <p class="card-text">{{item.description}}</p>
-                </div>
-                <div class="text-center">
-                    <h3>{{item.amount}}</h3>
-                </div>
-                <div class="card-body" style = "background-color:gray">
-                    <a href="{% url 'main:add_amount' item.id %}" class="btn btn-dark">+</a>
-                    <a href = "{% url 'main:sub_amount' item.id %}" class ="btn btn-dark">-</a>
-                    <a href = "{% url 'main:edit_product' item.pk %}" class ="btn btn-dark">?</a>
-                    <a href = "{% url 'main:delete_amount' item.id %}" class ="btn btn-dark">x</a>
-                </div>
+    <h3 class="text-center" id = judul></h3>
+    <div class="row row-cols-1 row-cols-md-3 g-4 py-5" id = items_cards></div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div>
-        {% endfor %}
-        <div class="col">
-            <div class="card text-center">
-                <div class="card-header" style = "background-color:black; color:white">
-                    {{item_akhir.name}}
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title" style="color:red">{{item_akhir.name}}</h5>
-                    <p class="card-text" style="color:red">{{item_akhir.description}}</p>
-                </div>
-                <div class="text-center" style="color:red">
-                    <h3>{{item_akhir.amount}}</h3>
-                </div>
-                <div class="card-body" style = "background-color:black">
-                    <a href="{% url 'main:add_amount' item_akhir.id %}" class="btn btn-secondary">+</a>
-                    <a href = "{% url 'main:sub_amount' item_akhir.id %}" class ="btn btn-secondary">-</a>
-                    <a href = "{% url 'main:edit_product' item_akhir.pk %}" class ="btn btn-secondary">?</a>
-                    <a href = "{% url 'main:delete_amount' item_akhir.id %}" class ="btn btn-secondary">x</a>
-                </div>
+            <div class="modal-body">
+                <form id="form" onsubmit="return false;">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name"></input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="col-form-label">Amount:</label>
+                        <input type="number" class="form-control" id="amount" name="amount"></input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="description" name="description"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Item</button>
             </div>
         </div>
     </div>
 </div>
+
 <footer style = "bottom: 0%; position: fixed;">
     <p style ="height:10px">Sesi terakhir login: {{ last_login }}</p>
 </footer>
+
+<script>
+    async function getItems() {
+        return fetch("{% url 'main:get_items_json' %}").then((res) => res.json())
+    }
+    async function getAllAmount() {
+        return fetch("{% url 'main:get_all_amount' %}").then((res) => res.json())
+    }
+
+    async function refreshItems() {
+        var jumlah_item,item_awal,item_akhir, all_amount
+        document.getElementById("items_cards").innerHTML = ""
+        // indexing item dari satu sampai last minus satu dan last
+        const items = await getItems()
+        
+        if(items != 0){
+            jumlah_item = items.length
+            item_awal = items.slice(0,jumlah_item-1)
+            item_akhir = items[jumlah_item-1]
+
+            console.log(items)
+            console.log(item_awal)
+            console.log(item_akhir)
+
+            all_amount = await getAllAmount()
+            document.getElementById("judul").style = "margin-top:0px"
+            document.getElementById("judul").innerHTML = `Hore!! Kamu Memiliki ${jumlah_item} Item Dengan Total ${all_amount} Buah ?!`
+        }else{
+            document.getElementById("judul").style = "margin-top:150px"
+            document.getElementById("judul").innerHTML = `Sayang Sekali Kamu Belum Ada Penambahan Item Nih!`
+            return
+        } 
+        
+        let htmlString = ``
+        item_awal.forEach((item) => {
+            htmlString += `\n
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header" style = "background-color:gray">
+                        ${item.fields.name}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${item.fields.name}</h5>
+                        <p class="card-text">${item.fields.description}</p>
+                    </div>
+                    <div class="text-center">
+                        <h3>${item.fields.amount}</h3>
+                    </div>
+                    <div class="card-body" style = "background-color:gray">
+                        <a href="add-amount/${item.pk}" class="btn btn-dark">+</a>
+                        <a href = "sub-amount/${item.pk}" class ="btn btn-dark">-</a>
+                        <a href = "edit-product/${item.pk}" class ="btn btn-dark">?</a>
+                        <a class ="btn btn-dark" onclick="deleteItems(${item.pk})">x</a>
+                    </div>
+                </div>
+            </div>` 
+        })
+        htmlString += `\n
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header" style = "background-color:black; color:white">
+                        ${item_akhir.fields.name}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" style = "color:red">${item_akhir.fields.name}</h5>
+                        <p class="card-text" style = "color:red">${item_akhir.fields.description}</p>
+                    </div>
+                    <div class="text-center" style = "color:red">
+                        <h3>${item_akhir.fields.amount}</h3>
+                    </div>
+                    <div class="card-body" style = "background-color:black">
+                        <a href="add-amount/${item_akhir.pk}" class="btn btn-secondary">+</a>
+                        <a href = "sub-amount/${item_akhir.pk}" class ="btn btn-secondary">-</a>
+                        <a href = "edit-product/${item_akhir.pk}" class ="btn btn-secondary">?</a>
+                        <a class ="btn btn-secondary" onclick="deleteItems(${item_akhir.pk})">x</a>
+                    </div>
+                </div>
+            </div>`
+
+        document.getElementById("items_cards").innerHTML = htmlString
+    }
+    refreshItems()
+
+    function addItems() {
+        fetch(`/create-ajax/`, {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        }).then(refreshItems)
+
+        document.getElementById("form").reset()
+        return false
+    }
+
+    function deleteItems(idItem) {
+        fetch(`/delete-item-ajax/${idItem}/`, {
+            method: "DELETE",
+        }).then(refreshItems)
+
+        return false
+    }
+
+    document.getElementById("button_add").onclick = addItems
+</script>
 {% endblock content %}
 
 
