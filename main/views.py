@@ -3,7 +3,7 @@ from django.db.models import Sum
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.core import serializers
 from main.models import Item
-from main.forms import ItemForm, RegisterForm
+from main.forms import  RegisterForm, ItemForm
 from django.urls import reverse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages  
@@ -128,24 +128,24 @@ def delete_items_ajax(request,id):
     
     return HttpResponseNotFound()
 
-def edit_product(request, id):
-    # Get product berdasarkan ID
-    product = Item.objects.get(pk = id)
+# def edit_product(request, id):
+#     # Get product berdasarkan ID
+#     product = Item.objects.get(pk = id)
 
-    # Set product sebagai instance dari form
-    form = ItemForm(request.POST or None, instance=product)
+#     # Set product sebagai instance dari form
+#     form = ItemForm(request.POST or None, instance=product)
 
-    if form.is_valid() and request.method == "POST":
-        # Simpan form dan kembali ke halaman awal
-        form.save()
-        return HttpResponseRedirect(reverse('main:show_main'))
+#     if form.is_valid() and request.method == "POST":
+#         # Simpan form dan kembali ke halaman awal
+#         form.save()
+#         return HttpResponseRedirect(reverse('main:show_main'))
 
-    context = {'form': form,
-               "Nama" : request.user.username,
-                "heading": "Edit Item!",
-                "value_button":"Edit Item",
-                "Kelas" : "PBP - D",}
-    return render(request, "edit_product.html", context)
+#     context = {'form': form,
+#                "Nama" : request.user.username,
+#                 "heading": "Edit Item!",
+#                 "value_button":"Edit Item",
+#                 "Kelas" : "PBP - D",}
+#     return render(request, "edit_product.html", context)
     
 
 @login_required(login_url='/login')

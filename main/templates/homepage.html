@@ -47,6 +47,13 @@
 {% block content %}
 <div class = "container py-5">
     <h3 class="text-center" id = judul></h3>
+    {% comment %} <p>HALLo
+        
+        {% for i in items  %}
+            {{i.user}} -
+        {% endfor %}
+            
+    </p> {% endcomment %}
     <div class="row row-cols-1 row-cols-md-3 g-4 py-5" id = items_cards></div>
 </div>
 
@@ -62,11 +69,11 @@
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="name" class="col-form-label">Name:</label>
-                        <input type="text" class="form-control" id="name" name="name"></input>
+                        <input type="text" class="form-control" id="name" name="name">
                     </div>
                     <div class="mb-3">
                         <label for="amount" class="col-form-label">Amount:</label>
-                        <input type="number" class="form-control" id="amount" name="amount"></input>
+                        <input type="number" class="form-control" id="amount" name="amount">
                     </div>
                     <div class="mb-3">
                         <label for="description" class="col-form-label">Description:</label>
@@ -99,6 +106,7 @@
         document.getElementById("items_cards").innerHTML = ""
         // indexing item dari satu sampai last minus satu dan last
         const items = await getItems()
+        // console.log(idItem)
         
         if(items != 0){
             jumlah_item = items.length
@@ -120,6 +128,7 @@
         
         let htmlString = ``
         item_awal.forEach((item) => {
+            {% comment %} console.log(item.fields.user) {% endcomment %}
             htmlString += `\n
             <div class="col">
                 <div class="card text-center">
@@ -181,7 +190,7 @@
     function deleteItems(idItem) {
         fetch(`/delete-item-ajax/${idItem}/`, {
             method: "DELETE",
-        }).then(refreshItems)
+        }).then(refreshItems())
 
         return false
     }
