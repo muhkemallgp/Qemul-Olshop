@@ -1,6 +1,7 @@
+import json
 from django.shortcuts import render, redirect
 from django.db.models import Sum
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, JsonResponse
 from django.core import serializers
 from main.models import Item
 from main.forms import  RegisterForm, ItemForm
@@ -14,6 +15,25 @@ from django.views.decorators.csrf import csrf_exempt
 import datetime
 
 
+@csrf_exempt
+def create_item_flutter(request):
+    if request.method == 'POST':
+        
+        data = json.loads(request.body)
+
+        new_item = Item.objects.create(
+            user = request.user,
+            name = data["name"],
+            price = int(data["price"]),
+            description = data["description"]
+        )
+
+        new_item.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
 # Create your views here.
 @login_required(login_url='/login')
 def show_main (request):
@@ -170,7 +190,7 @@ def show_xml(request):
     data = Item.objects.all()
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
-@login_required(login_url='/login')
+# @login_required(login_url='/login')
 def show_json(request):
     data = Item.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
