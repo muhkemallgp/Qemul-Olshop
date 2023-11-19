@@ -23,11 +23,11 @@ def create_item_flutter_new(request):
 
         new_item = Item.objects.create(
             user = request.user,
-            name = data["name"],
+            name = "UDIN",
             amount = 1,
-            description = data["description"]
+            description = "MAHMUD TURJANA",
         )
-        print("TEST 2")
+        # print("TEST 2")
         new_item.save()
 
         return JsonResponse({"status": "success"}, status=200)
