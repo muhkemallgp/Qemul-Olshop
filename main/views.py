@@ -21,14 +21,14 @@ def create_item_flutter_new(request):
         print("TEST 1")
         data = json.loads(request.body)
 
-        new_item = Item.objects.create(
-            user = request.user,
-            name = data["name"],
-            amount = int(data["amount"]),
-            description = data["description"]
-        )
+        # new_item = Item.objects.create(
+        #     user = request.user,
+        #     name = data["name"],
+        #     amount = int(data["amount"]),
+        #     description = data["description"]
+        # )
         print("TEST 2")
-        new_item.save()
+        # new_item.save()
 
         return JsonResponse({"status": "success"}, status=200)
     else:
