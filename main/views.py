@@ -22,7 +22,7 @@ def create_item_flutter_new(request):
         data = json.loads(request.body)
 
         new_item = Item.objects.create(
-            user = request.user,
+            user = 1,
             name = "UDIN",
             amount = 1,
             description = "MAHMUD TURJANA",
