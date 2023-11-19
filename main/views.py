@@ -18,7 +18,7 @@ import datetime
 @csrf_exempt
 def create_item_flutter(request):
     if request.method == 'POST':
-        
+        print("TEST 1")
         data = json.loads(request.body)
 
         new_item = Item.objects.create(
@@ -27,7 +27,7 @@ def create_item_flutter(request):
             amount = int(data["amount"]),
             description = data["description"]
         )
-
+        print("TEST 2")
         new_item.save()
 
         return JsonResponse({"status": "success"}, status=200)
