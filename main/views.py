@@ -16,7 +16,7 @@ import datetime
 
 
 @csrf_exempt
-def create_item_flutter(request):
+def create_item_flutter_new(request):
     if request.method == 'POST':
         print("TEST 1")
         data = json.loads(request.body)
