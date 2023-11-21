@@ -22,18 +22,33 @@ def create_item_flutter_new(request):
         data = json.loads(request.body)
 
         new_item = Item.objects.create(
-            user = 1,
-            name = "UDIN",
-            amount = 1,
-            description = "MAHMUD TURJANA",
+            user = request.user,
+            name = data["name"],
+            amount = int(data["amount"]),
+            description = data["description"],
         )
+        print(request.user, "ASAS")
         # print("TEST 2")
         new_item.save()
 
         return JsonResponse({"status": "success"}, status=200)
     else:
         return JsonResponse({"status": "error"}, status=401)
-    
+
+# @login_required(login_url='/login')
+@csrf_exempt
+def show_json_user(request,uname):
+    # print(uname)
+    data_item = Item.objects.all()
+    for data in data_item:
+        if data.user.username == uname:
+            user_id = data.user
+            data = Item.objects.filter(user = user_id)
+            break
+        else:
+            data = []
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
 # Create your views here.
 @login_required(login_url='/login')
 def show_main (request):

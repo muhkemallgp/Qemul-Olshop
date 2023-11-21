@@ -1,7 +1,7 @@
 from django.urls import path
 from main.views import show_main,show_xml,show_xml_by_id,show_json,show_json_by_id,\
             register, login_user, logout_user,add_amount,sub_amount,delete_amount,\
-            get_items_json,add_items_ajax, get_all_amount, delete_items_ajax, add_item,create_item_flutter_new
+            get_items_json,add_items_ajax, get_all_amount, delete_items_ajax, add_item,create_item_flutter_new,show_json_user
 
 app_name = "main"
 
@@ -26,4 +26,6 @@ urlpatterns = [
     path('get-all-amount/',get_all_amount,name='get_all_amount'),
     path("delete-item-ajax/<int:id>/",delete_items_ajax, name='delete_item_ajax'),
     path('create-flutter/', create_item_flutter_new, name='create_item_flutter'),
+
+    path("json-item/<str:uname>/",show_json_user, name="show_json_user"),
 ]
